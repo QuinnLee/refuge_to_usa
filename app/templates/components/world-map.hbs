@@ -1,0 +1,11 @@
+<g transform={{translate}}>
+  {{#each mapProjection as |country|}}
+    <path d={{country}} class="boundary"></path>
+  {{/each}}
+  {{#each map as |country|}}
+    {{map-country country=country path=path}}
+  {{/each}}
+  {{#each data as |datum|}}
+    {{map-arch datum=datum path=path}}
+  {{/each}}
+</g>
