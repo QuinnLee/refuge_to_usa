@@ -1,7 +1,13 @@
 <div class='container'>
-  <h1> index </h1>
   <div class='row aligner'>
-    {{world-map map=model.map data=filteredData }}
+    {{world-map
+      map=model.map
+      data=model.data
+      originColorScale=originColorScale
+      destinationColorScale=destinationColorScale
+      colorScale=colorScale
+      radiusScale=radiusScale
+      }}
   </div>
 </div>
 

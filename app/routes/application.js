@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import _ from 'npm:lodash';
+import d3 from 'npm:d3';
 
 const { get, set, RSVP, $ } = Ember;
 
@@ -8,7 +9,13 @@ const MAP_URL = 'https://raw.githubusercontent.com/QuinnLee/refuge_to_usa/master
 const ORGIN_DATA = 'https://raw.githubusercontent.com/QuinnLee/refuge_to_usa/master/data/origins.json';
 const DESTINATION_DATA = 'https://raw.githubusercontent.com/QuinnLee/refuge_to_usa/master/data/destinations.json';
 
+
 export default Ember.Route.extend({
+  queryParams: {
+    year: {
+      refreshModel: false
+    }
+  },
   model() {
     const request = {
       data: $.getJSON(DATA_URL),
@@ -25,28 +32,41 @@ export default Ember.Route.extend({
     const originLocations = get(model, 'origin')
     const destinationLocations = get(model, 'destination');
 
-    model.data  = _.chain(data)
+    let filteredData = _.chain(data)
       .filter('arrivals')
-      .groupBy('year')
-      .reduce((memo, values, key) => {
-        let groupBy = _.groupBy(values, 'origin');
-        let data = _.reduce(groupBy, (memo, values) => {
-          let max = _.maxBy(values, 'arrivals');
-          let arrivals = _.sumBy(values, 'arrivals');
-          let first = _.first(values);
-          let year = first.year;
-          let origin = first.origin
-          let destination = max.dest_state;
-          let originCoordinates = get(originLocations, origin) || originLocations[origin];
-          let destinationCoordinates = get(destinationLocations, destination);
-          if(!originCoordinates) {debugger}
-          if(!destinationCoordinates) {debugger}
-          return memo.concat({ origin, year, values, arrivals, originCoordinates, destinationCoordinates });
-        }, []);
-
-        memo[key] = data;
-        return memo;
-      }, {})
+      .filter('year', this.get('year'))
       .value()
+
+    let originData = _.chain(filteredData)
+      .groupBy('origin')
+      .reduce((memo, values) => {
+         let arrivals = _.sumBy(values, 'arrivals');
+         let first = _.first(values);
+         let year = first.year;
+         let origin = first.origin
+         if(origin === 'Norway') {debugger}
+         let originCoordinates = get(originLocations, origin) || originLocations[origin]; // cause of `Dem. Rep. Congo
+         return memo.concat({ location: origin, year, values, arrivals, coords: originCoordinates, type: 'origin' });
+       }, [])
+       .value();
+
+    let destinationData = _.chain(filteredData)
+      .groupBy('dest_state')
+      .reduce((memo, values) => {
+         let arrivals = _.sumBy(values, 'arrivals');
+         let first = _.first(values);
+         let year = first.year;
+         let destination = first.dest_state
+         let destinationCoordinates = get(destinationLocations, destination);
+         return memo.concat({ location:destination , year, values, arrivals, coords: destinationCoordinates, type: 'destination' });
+       }, [])
+       .value();
+
+    model.data = destinationData.concat(originData);
+
+    model.destinationData = destinationData;
+    model.originData = originData;
+
+    return model;
   }
 });
