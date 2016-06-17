@@ -1,11 +1,46 @@
-<p> {{totalArrivals}} refugees arrived to the USA </p>
-{{location}} {{locationTotal}}
-{{type}}
-<h1> foo</h1>
+<h3 class='map-info--copy'>
+ <u>{{format-number totalArrivals}}</u> refugees entered the USA
+  in <u>{{year}}</u>
+</h3>
 
-{{#if hasManyLocations }}
-  {{maxLocationDatum.location}}{{maxLocationDatum.arrivals}}
-  {{minLocationDatum.location}}{{minLocationDatum.arrivals}}
-{{else}}
-  {{minLocationDatum.location}}{{minLocationDatum.arrivals}}
+{{#if location}}
+  <h3 class='map-info--copy'>
+    <u>{{format-number locationTotal}}</u> {{format-refugee locationTotal}} {{verbCopy}}
+    <u>{{location}}</u>
+  </h3>
+  {{#if hasOrigin }}
+    {{#if hasManyLocations }}
+      <h3 class='map-info--copy'>
+        <u>{{maxLocationDatum.dest_state}} recived the most </u>
+        {{format-refugee maxLocationDatum.arrivals}}
+        ({{format-number maxLocationDatum.arrivals}})
+      </h3>
+      <h3 class='map-info--copy'>
+        <u>{{minLocationDatum.dest_state}} recived the least </u>
+        {{format-refugee minLocationDatum.arrivals}}
+        ({{format-number minLocationDatum.arrivals}}). <br>
+      </h3>
+    {{else}}
+      <h3 class='map-info--copy'>
+        And entered <u>{{minLocationDatum.dest_state}}</u>
+      </h3>
+    {{/if}}
+  {{else}}
+    {{#if hasManyLocations }}
+      <h3 class='map-info--copy'>
+        Most of the {{format-refugee maxLocationDatum.arrivals}}
+        originated from <u>{{maxLocationDatum.origin}} </u>
+        ({{format-number maxLocationDatum.arrivals}})
+      </h3>
+      <h3 class='map-info--copy'>
+        Least of the {{format-refugee minLocationDatum.arrivals}}
+        originated from <u>{{minLocationDatum.origin}} </u>
+        ({{format-number minLocationDatum.arrivals}})
+      </h3>
+    {{else}}
+      <h3 class='map-info--copy'>
+        from <u>{{minLocationDatum.origin}}</u>
+      </h3>
+    {{/if}}
+  {{/if}}
 {{/if}}
