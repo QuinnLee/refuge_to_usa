@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import d3 from 'npm:d3';
 const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
@@ -27,6 +26,8 @@ export default Ember.Component.extend({
   }),
   mouseEnter() {
     let location = get(this, 'datum.location');
+    let type = get(this, 'datum.type');
     set(this, 'location', location);
+    set(this, 'type', type);
   }
 });

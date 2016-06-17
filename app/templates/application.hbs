@@ -1,10 +1,42 @@
 <div class='container'>
+  <h1 class='row aligner'>
+    Another look at where US Refugees come and go
+  </h1>
 </div>
 <div class='container'>
-  <div class='row aligner'>
+  <div class='row main-flex'>
+    <aside class='aside--element'>
+      <h2> About </h2>
+      <p class="lead">
+        The Data is from
+        <a href="http://www.buzzfeed.com/jsvine/where-us-refugees-come-from-and-go-in-charts">
+          this Buzzfeed
+        </a>
+        article.
+      </p>
+      <p>
+        The data can be found
+        <a href="https://github.com/BuzzFeedNews/2015-11-refugees-in-the-united-states">
+          here.
+        </a>
+      </p>
+      <p>
+        The visualization can be found
+        <a href="https://github.com/QuinnLee/refuge_to_usa">
+          here.
+        </a>
+      </p>
+      <p>
+        Select a year to see the how Refugee migration changes per year.
+      </p>
+      <p>
+        Select each node to see the origin/destination of refugees.
+      </p>
+    </aside>
     {{world-map
       location=location
       locations=locations
+      type=type
       map=model.map
       data=visualizationData
       arcs=arcs
@@ -13,6 +45,7 @@
       colorScale=colorScale
       radiusScale=radiusScale
       }}
+    {{map-info data=visualizationData arcs=arcs location=location type=type}}
   </div>
 </div>
 <nav class='nav-container'>

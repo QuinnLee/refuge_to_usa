@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import _ from 'npm:lodash';
-import d3 from 'npm:d3';
 
 const { get, set, RSVP, $ } = Ember;
 
@@ -24,14 +23,14 @@ export default Ember.Route.extend({
       let newData= _.map(data, function(datum) {
         let origin = get(datum, 'origin');
         let dest_state = get(datum, 'dest_state');
-        let originCoords =  get(origins, origin) || origins[origin] //Dem. Rep. Congo
+        let originCoords =  get(origins, origin) || origins[origin]; //Dem. Rep. Congo
         let destinationCoords = get(destinations, dest_state);
         set(datum, 'originCoords', originCoords);
         set(datum, 'destinationCoords', destinationCoords);
         return datum;
       });
 
-      set(model, 'data', newData)
+      set(model, 'data', newData);
 
       return model;
     });

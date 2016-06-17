@@ -1,0 +1,11 @@
+<p> {{totalArrivals}} refugees arrived to the USA </p>
+{{location}} {{locationTotal}}
+{{type}}
+<h1> foo</h1>
+
+{{#if hasManyLocations }}
+  {{maxLocationDatum.location}}{{maxLocationDatum.arrivals}}
+  {{minLocationDatum.location}}{{minLocationDatum.arrivals}}
+{{else}}
+  {{minLocationDatum.location}}{{minLocationDatum.arrivals}}
+{{/if}}

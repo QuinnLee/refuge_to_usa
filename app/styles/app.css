@@ -4,6 +4,12 @@
   justify-content: center;
 }
 
+.main-flex {
+  display: flex;
+  justify-content: center;
+}
+
+
 .boundary {
   fill: none;
   stroke: steelblue;
@@ -13,7 +19,6 @@
 .travel-path {
   fill: none;
   stroke: steelblue;
-  stroke-width: 1px;
 }
 
 .origin-dot {
@@ -31,11 +36,12 @@
   width: 100%;
 }
 
-.container {
-  display: flex;
-}
-
 .nav--year {
   margin: 0.5em;
   flex: 1 1 1;
 }
+.aside--element {
+  width: 20%;
+  height: 100%;
+}
+

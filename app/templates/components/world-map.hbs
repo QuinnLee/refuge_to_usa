@@ -11,10 +11,11 @@
       radiusScale=radiusScale
       originColorScale=originColorScale
       destinationColorScale=destinationColorScale
+      type=type
     }}
   {{/each}}
-
   {{#each arcs as |arc| }}
-    {{map-arch colorScale=originColorScale datum=arc path=path}}
+    {{map-arch radiusScale=radiusScale colorScale=originColorScale datum=arc path=path}}
   {{/each}}
 </g>
+

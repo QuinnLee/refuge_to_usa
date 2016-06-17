@@ -6,7 +6,7 @@ export default Ember.Component.extend({
   classNames: ['nav--year', 'btn', 'btn-default', 'btn-lg'],
   classNameBindings: ['active:btn-primary'],
   active: computed('year', 'currentYear', function (){
-    return get(this, 'year') == get(this, 'currentYear');
+    return parseInt(get(this, 'year')) === parseInt(get(this, 'currentYear'));
   }),
   mouseEnter() {
     this.sendAction('updateYear', get(this, 'year'));

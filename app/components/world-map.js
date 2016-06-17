@@ -6,14 +6,13 @@ const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
   height: 550,
-  width: 1100,
+  width: 800,
   topMargin: 50,
   bottomMargin: 50,
   leftMargin: 50,
   rightMargin: 50,
   tagName: 'svg',
   attributeBindings: ['height', 'width'],
-  dotRange: [1,12],
   mapData: computed('data', 'voronoi', function() {
     let data = get(this, 'data');
     let projection = get(this, 'projection');
@@ -22,8 +21,10 @@ export default Ember.Component.extend({
       set(datum, 'projectionCoords',projection([coords.long, coords.lat]));
       return datum;
     });
+
     get(this, 'voronoi')(data)
-      .forEach(function(d) { set(d, 'point.cell', d); })
+      .forEach(function(d) { set(d, 'point.cell', d); });
+
     return data;
   }),
   translate: computed('topMargin', 'leftMargin', function() {
@@ -37,9 +38,9 @@ export default Ember.Component.extend({
     let height = get(this, 'height') - this.topMargin - this.bottomMargin;
     let width = get(this, 'width') - this.leftMargin - this.rightMargin;
     return d3.geo.mercator()
-      .scale(153)
+      .scale(120)
       .translate([width / 2, height / 2])
-      .center([0, 30])
+      .center([0, 55])
       .precision(0.1);
   }),
   path: computed('projection', function() {
@@ -54,7 +55,14 @@ export default Ember.Component.extend({
       .y((d) => get(d, 'projectionCoords')[1])
       .clipExtent([[-50, -50], [width, height]]);
   }),
+  legendCircles: computed('radiusScale', function() {
+    let radiusScale = get(this, 'radiusScale');
+    return radiusScale.ticks(4).map((d) => {
+      return { r: radiusScale(d), cx: Math.pow(radiusScale(d),2), value: d };
+    });
+  }),
   mouseLeave() {
     set(this, 'location', null);
+    set(this, 'type', null);
   }
 });

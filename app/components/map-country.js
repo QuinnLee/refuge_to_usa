@@ -1,4 +1,4 @@
-import topojson from 'npm:topojson';
+import Ember from 'ember';
 const { computed, get } = Ember;
 
 export default Ember.Component.extend({

@@ -2,15 +2,16 @@ import Ember from 'ember';
 import d3 from 'npm:d3';
 import _ from 'npm:lodash';
 
-const { computed, get, set } = Ember;
-const { reduce, groupBy } = _;
+const { computed, get } = Ember;
+const { reduce, groupBy, filter } = _;
 
 export default Ember.Controller.extend({
-  dotRange: [5,20],
+  dotRange: [3,15],
   queryParams: ['year'],
   year: 2015,
   years: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015],
   location: null,
+  type: null,
   currentYear: computed.alias('year'),
   origins: computed.alias('model.origins'),
   destinations: computed.alias('model.destinations'),
@@ -19,16 +20,14 @@ export default Ember.Controller.extend({
     let origins = get(this, 'origins');
     let destinations = get(this, 'destinations');
     return Object.assign(origins, destinations);
-
   }),
   filteredData: computed('data', 'year', function() {
-    let location = get(this, 'location');
     let data = get(this, 'data');
     let year = get(this, 'year');
 
-    let filteredData = _.chain(data)
+    let filteredData = _.chain(data);
     if(year) {
-      return filteredData.filter({ year: year }).value()
+      return filteredData.filter({ year: year }).value();
     }
     return data;
   }),
@@ -49,10 +48,13 @@ export default Ember.Controller.extend({
       let originValues =  get(groupByOrigin, country) || groupByOrigin[country];
       let destinationValues =  get(groupByDestination, country) || groupByDestination[country];
       let values = originValues || destinationValues;
-
       let type;
 
       let arrivals =  _.sumBy(values, 'arrivals');
+
+      values = filter(values, 'arrivals');
+
+      if(!arrivals) { return memo; }
 
       if(originValues) {
         type = 'origin';
@@ -61,16 +63,18 @@ export default Ember.Controller.extend({
       }
       return memo.concat({location: country, values, arrivals, coords, type});
 
-    }, [])
+    }, []);
   }),
   arrivalExtent: computed('visualizationData', function() {
     let originsData = get(this, 'visualizationData');
-    return d3.extent(originsData, (d) =>  d.arrivals );
+    let max = d3.max(originsData, (d) => d.arrivals);
+    return [1, max];
   }),
   radiusScale: computed('arrivalExtent', function() {
     return d3.scale.linear()
       .domain(get(this, 'arrivalExtent'))
-      .range(get(this, 'dotRange'));
+      .range(get(this, 'dotRange'))
+      .clamp(true);
   }),
   originColorScale: computed('arrivalExtent', function() {
     return d3.scale.linear()
@@ -89,7 +93,7 @@ export default Ember.Controller.extend({
     let data = get(this, 'visualizationData');
 
     if(!location){ return []; }
-    let value = data.filter((d) => get(d, 'location') === location)[0]
+    let value = data.filter((d) => get(d, 'location') === location)[0];
     return get(value, 'values');
   }),
   actions: {
