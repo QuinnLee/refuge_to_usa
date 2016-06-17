@@ -2,11 +2,10 @@ import Ember from 'ember';
 import topojson from 'npm:topojson';
 import d3 from 'npm:d3';
 
-const { computed, get } = Ember;
-
+const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
-  height: 650,
+  height: 550,
   width: 1100,
   topMargin: 50,
   bottomMargin: 50,
@@ -20,11 +19,11 @@ export default Ember.Component.extend({
     let projection = get(this, 'projection');
     data = data.map((datum) => {
       let coords = get(datum, 'coords');
-      datum.projectionCoords = projection([coords.long, coords.lat]);
+      set(datum, 'projectionCoords',projection([coords.long, coords.lat]));
       return datum;
     });
     get(this, 'voronoi')(data)
-      .forEach(function(d) { d.point.cell = d; })
+      .forEach(function(d) { set(d, 'point.cell', d); })
     return data;
   }),
   translate: computed('topMargin', 'leftMargin', function() {
@@ -38,7 +37,7 @@ export default Ember.Component.extend({
     let height = get(this, 'height') - this.topMargin - this.bottomMargin;
     let width = get(this, 'width') - this.leftMargin - this.rightMargin;
     return d3.geo.mercator()
-      .scale(200)
+      .scale(153)
       .translate([width / 2, height / 2])
       .center([0, 30])
       .precision(0.1);
@@ -54,5 +53,8 @@ export default Ember.Component.extend({
       .x((d) => get(d, 'projectionCoords')[0])
       .y((d) => get(d, 'projectionCoords')[1])
       .clipExtent([[-50, -50], [width, height]]);
-  })
+  }),
+  mouseLeave() {
+    set(this, 'location', null);
+  }
 });

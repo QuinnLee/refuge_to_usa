@@ -5,12 +5,13 @@ export default Ember.Component.extend({
   tagName: 'path',
   attributeBindings: ['d'],
   classNames: ['travel-path'],
-  destLongLat: computed('datum.destinationCoordinates.lat','datum.destinationCoordinates.long', function() {
-    let coords = get(this, 'datum.destinationCoordinates');
+  destLongLat: computed('datum.destinationCoords.lat','datum.destinationCoords.long', function() {
+    let coords = get(this, 'datum.destinationCoords');
     return [ coords.long, coords.lat]
+
   }),
-  originLongLat: computed('datum.originCoordinates.long','datum.originCoordinates.lat', function() {
-    let coords = get(this, 'datum.originCoordinates');
+  originLongLat: computed('datum.originCoords.long','datum.originCoords.lat', function() {
+    let coords = get(this, 'datum.originCoords');
     return [ coords.long, coords.lat]
   }),
   route: computed('originLongLat', 'destLongLat', function() {

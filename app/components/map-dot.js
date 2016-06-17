@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import d3 from 'npm:d3';
-const { computed, get } = Ember;
+const { computed, get, set } = Ember;
 
 export default Ember.Component.extend({
   tagName: 'g',
@@ -26,6 +26,7 @@ export default Ember.Component.extend({
     return `translate(${coords})`;
   }),
   mouseEnter() {
-    console.log(this.get('datum.location'));
+    let location = get(this, 'datum.location');
+    set(this, 'location', location);
   }
 });

@@ -11,62 +11,30 @@ const DESTINATION_DATA = 'https://raw.githubusercontent.com/QuinnLee/refuge_to_u
 
 
 export default Ember.Route.extend({
-  queryParams: {
-    year: {
-      refreshModel: false
-    }
-  },
   model() {
     const request = {
       data: $.getJSON(DATA_URL),
       map: $.getJSON(MAP_URL),
-      origin: $.getJSON(ORGIN_DATA),
-      destination: $.getJSON(DESTINATION_DATA),
+      origins: $.getJSON(ORGIN_DATA),
+      destinations: $.getJSON(DESTINATION_DATA),
     };
+    return RSVP.hash(request).then((model) => {
+      let { data, origins, destinations } = model;
 
-    return RSVP.hash(request);
+      let newData= _.map(data, function(datum) {
+        let origin = get(datum, 'origin');
+        let dest_state = get(datum, 'dest_state');
+        let originCoords =  get(origins, origin) || origins[origin] //Dem. Rep. Congo
+        let destinationCoords = get(destinations, dest_state);
+        set(datum, 'originCoords', originCoords);
+        set(datum, 'destinationCoords', destinationCoords);
+        return datum;
+      });
+
+      set(model, 'data', newData)
+
+      return model;
+    });
   },
-  afterModel(model) {
-    let data = get(model, 'data');
-
-    const originLocations = get(model, 'origin')
-    const destinationLocations = get(model, 'destination');
-
-    let filteredData = _.chain(data)
-      .filter('arrivals')
-      .filter('year', this.get('year'))
-      .value()
-
-    let originData = _.chain(filteredData)
-      .groupBy('origin')
-      .reduce((memo, values) => {
-         let arrivals = _.sumBy(values, 'arrivals');
-         let first = _.first(values);
-         let year = first.year;
-         let origin = first.origin
-         if(origin === 'Norway') {debugger}
-         let originCoordinates = get(originLocations, origin) || originLocations[origin]; // cause of `Dem. Rep. Congo
-         return memo.concat({ location: origin, year, values, arrivals, coords: originCoordinates, type: 'origin' });
-       }, [])
-       .value();
-
-    let destinationData = _.chain(filteredData)
-      .groupBy('dest_state')
-      .reduce((memo, values) => {
-         let arrivals = _.sumBy(values, 'arrivals');
-         let first = _.first(values);
-         let year = first.year;
-         let destination = first.dest_state
-         let destinationCoordinates = get(destinationLocations, destination);
-         return memo.concat({ location:destination , year, values, arrivals, coords: destinationCoordinates, type: 'destination' });
-       }, [])
-       .value();
-
-    model.data = destinationData.concat(originData);
-
-    model.destinationData = destinationData;
-    model.originData = originData;
-
-    return model;
-  }
 });
+

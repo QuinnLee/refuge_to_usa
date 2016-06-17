@@ -14,27 +14,28 @@
   fill: none;
   stroke: steelblue;
   stroke-width: 1px;
-  stroke-dasharray: 100;
-  animation: dash 5s linear forwards infinite;;
-}
-
-@keyframes dash {
-  to {
-    stroke-dashoffset: 1000;
-  }
 }
 
 .origin-dot {
-  opacity: 0.5;
   stroke: black;
+  opacity: 0.8;
   stroke-width: 1px;
 }
 
 .voronoi-line {
   fill: transparent;
-  opacity: 0.5;
-  stroke: black;
-  stroke-width: 1px;
+  stroke: transparent;
 }
 
+.nav-container {
+  width: 100%;
+}
 
+.container {
+  display: flex;
+}
+
+.nav--year {
+  margin: 0.5em;
+  flex: 1 1 1;
+}

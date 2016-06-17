@@ -2,13 +2,19 @@
   {{#each features as |feature|}}
     {{map-country feature=feature path=path}}
   {{/each}}
+
   {{#each mapData as |datum|}}
     {{map-dot
+      location=location
       datum=datum
       projection=projection
       radiusScale=radiusScale
       originColorScale=originColorScale
       destinationColorScale=destinationColorScale
     }}
+  {{/each}}
+
+  {{#each arcs as |arc| }}
+    {{map-arch colorScale=originColorScale datum=arc path=path}}
   {{/each}}
 </g>
