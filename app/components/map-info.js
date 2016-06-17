@@ -22,7 +22,7 @@ export default Ember.Component.extend({
   }),
   locationTotal: computed('locationData', function() {
     let locationData = get(this, 'locationData');
-    return sumBy(locationData, 'arrivals')
+    return sumBy(locationData, 'arrivals');
   }),
   verbCopy: computed('type', function() {
     let type = get(this, 'type');
