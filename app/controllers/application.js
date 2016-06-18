@@ -19,7 +19,7 @@ export default Ember.Controller.extend({
   locations: computed('origins', 'destinations', function() {
     let origins = get(this, 'origins');
     let destinations = get(this, 'destinations');
-    return Object.assign(origins, destinations);
+    return Object.assign(destinations, origins);
   }),
   filteredData: computed('data', 'year', function() {
     let data = get(this, 'data');
